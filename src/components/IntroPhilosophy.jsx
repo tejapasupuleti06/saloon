@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   ArrowRight,
   Sparkles,
@@ -8,24 +8,11 @@ import {
   RotateCcw
 } from "lucide-react";
 import ToolSensoryModal from "./ToolSensoryModal";
-import Skiper48Cards from "./ui/skiper-ui/skiper48";
 
 export default function IntroPhilosophy({ onScrollTo, onOpenBooking }) {
   const [activeTool, setActiveTool] = useState(null);
   const [focusedToolId, setFocusedToolId] = useState(null);
-  const [activeToolIndex, setActiveToolIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.innerWidth <= 768 : false
-  );
   const cardRefs = useRef({});
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const salonTools = [
     {
@@ -176,8 +163,6 @@ export default function IntroPhilosophy({ onScrollTo, onOpenBooking }) {
       setActiveTool(toolId);
     } else {
       setFocusedToolId(toolId);
-      const idx = salonTools.findIndex((t) => t.id === toolId);
-      if (idx !== -1) setActiveToolIndex(idx);
       if (shouldScroll && cardRefs.current[toolId]) {
         cardRefs.current[toolId].scrollIntoView({
           behavior: "smooth",
@@ -342,10 +327,8 @@ export default function IntroPhilosophy({ onScrollTo, onOpenBooking }) {
         {/* Quick Station Navigation Pills */}
         <div className="tools-deck-nav-bar">
           <div className="tools-pills-row">
-            {salonTools.map((tool, idx) => {
-              const isFocused = isMobile
-                ? activeToolIndex === idx
-                : focusedToolId === tool.id;
+            {salonTools.map((tool) => {
+              const isFocused = focusedToolId === tool.id;
               const toolIcons = {
                 shears: "✂",
                 dryer: "💨",
@@ -359,10 +342,7 @@ export default function IntroPhilosophy({ onScrollTo, onOpenBooking }) {
                   key={tool.id}
                   type="button"
                   className={`tool-deck-pill ${isFocused ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveToolIndex(idx);
-                    handleCardSelect(tool.id);
-                  }}
+                  onClick={() => handleCardSelect(tool.id)}
                 >
                   <span className="pill-emoji">{toolIcons[tool.iconType]}</span>
                   <span className="pill-name">
@@ -387,148 +367,132 @@ export default function IntroPhilosophy({ onScrollTo, onOpenBooking }) {
           )}
         </div>
 
-        {/* DESKTOP/COMPUTER VIEW: Old Overlapping Cascading Deck with Spotlight & Blur */}
-        <div className="desktop-tools-deck">
-          <div className="tools-stacked-stage">
-            {/* Side navigation arrows */}
-            <button
-              type="button"
-              className="deck-nav-arrow deck-prev-arrow"
-              onClick={handlePrevTool}
-              aria-label="Previous station"
-              title="Previous station"
-            >
-              <ChevronLeft size={20} />
-            </button>
+        {/* Overlapping Cascading Deck Stage */}
+        <div className="tools-stacked-stage">
+          {/* Side navigation arrows */}
+          <button
+            type="button"
+            className="deck-nav-arrow deck-prev-arrow"
+            onClick={handlePrevTool}
+            aria-label="Previous station"
+            title="Previous station"
+          >
+            <ChevronLeft size={20} />
+          </button>
 
-            <button
-              type="button"
-              className="deck-nav-arrow deck-next-arrow"
-              onClick={handleNextTool}
-              aria-label="Next station"
-              title="Next station"
-            >
-              <ChevronRight size={20} />
-            </button>
+          <button
+            type="button"
+            className="deck-nav-arrow deck-next-arrow"
+            onClick={handleNextTool}
+            aria-label="Next station"
+            title="Next station"
+          >
+            <ChevronRight size={20} />
+          </button>
 
-            <div className={`tools-stacked-deck-scroller ${focusedToolId ? "tools-deck-has-focus" : ""}`}>
-              <div className="tools-stacked-deck">
-                {salonTools.map((tool, idx) => {
-                  const isFocused = focusedToolId === tool.id;
-                  const isBlurred = focusedToolId !== null && !isFocused;
+          <div className={`tools-stacked-deck-scroller ${focusedToolId ? "tools-deck-has-focus" : ""}`}>
+            <div className="tools-stacked-deck">
+              {salonTools.map((tool, idx) => {
+                const isFocused = focusedToolId === tool.id;
+                const isBlurred = focusedToolId !== null && !isFocused;
 
-                  return (
-                    <div
-                      key={tool.id}
-                      ref={(el) => (cardRefs.current[tool.id] = el)}
-                      className={`salon-tool-card stacked-tool-card ${
-                        isFocused ? "is-focused selected" : ""
-                      } ${isBlurred ? "is-blurred" : ""}`}
-                      style={{
-                        zIndex: isFocused ? 50 : idx + 1
-                      }}
-                      onClick={() => handleCardSelect(tool.id)}
-                      title={
-                        isFocused
-                          ? `Click to pop out ${tool.name} interactive lab`
-                          : `Click to highlight ${tool.name} and blur remaining cards`
-                      }
-                    >
-                      {/* Visual Focus Beacon */}
-                      {isFocused && (
-                        <div className="tool-focused-beacon">
-                          <Sparkles size={11} />
-                          <span>SPOTLIGHTED • CLICK TO POP OUT</span>
-                        </div>
-                      )}
-
-                      <div className="tool-card-top">
-                        <span className="tool-tag">{tool.tag}</span>
-                        <span className="tool-badge-pill">{tool.badge}</span>
+                return (
+                  <div
+                    key={tool.id}
+                    ref={(el) => (cardRefs.current[tool.id] = el)}
+                    className={`salon-tool-card stacked-tool-card ${
+                      isFocused ? "is-focused selected" : ""
+                    } ${isBlurred ? "is-blurred" : ""}`}
+                    style={{
+                      zIndex: isFocused ? 50 : idx + 1
+                    }}
+                    onClick={() => handleCardSelect(tool.id)}
+                    title={
+                      isFocused
+                        ? `Click to pop out ${tool.name} interactive lab`
+                        : `Click to highlight ${tool.name} and blur remaining cards`
+                    }
+                  >
+                    {/* Visual Focus Beacon */}
+                    {isFocused && (
+                      <div className="tool-focused-beacon">
+                        <Sparkles size={11} />
+                        <span>SPOTLIGHTED • CLICK TO POP OUT</span>
                       </div>
+                    )}
 
-                      {/* Animated Tool Icon Container */}
-                      <div className="tool-icon-stage">
-                        <div className="tool-icon-circle">
-                          {renderToolSvg(tool.iconType)}
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <h4 className="tool-name">{tool.name}</h4>
-                      <div className="tool-sensation-bar">
-                        <span className="sensation-dot" />
-                        <span className="sensation-text">{tool.sensation}</span>
-                      </div>
-
-                      <p className="tool-desc">{tool.desc}</p>
-
-                      <div className="tool-craft-spec">
-                        <CheckCircle2 size={13} className="gold-icon flex-shrink-0" />
-                        <span>{tool.craftDetail}</span>
-                      </div>
-
-                      {/* Interactive Action Area */}
-                      {isFocused ? (
-                        <div className="tool-card-focused-actions">
-                          <button
-                            type="button"
-                            className="tool-launch-modal-btn"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setActiveTool(tool.id);
-                            }}
-                          >
-                            <span>LAUNCH SENSORY LAB</span>
-                            <ArrowRight size={14} />
-                          </button>
-                          <span className="tool-sound-preview-chip">
-                            {tool.soundEffect}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="tool-card-bottom-row">
-                          <div className="tool-sound-cue-inline">
-                            <small>{tool.soundEffect}</small>
-                          </div>
-                          <div className="tool-card-pop-trigger">
-                            <span>{isBlurred ? "FOCUS" : "EXPLORE"}</span>
-                            <ArrowRight size={12} />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Subtle Click-to-Focus Overlay for blurred cards */}
-                      {isBlurred && (
-                        <div className="tool-card-tap-cue">
-                          <span>TAP TO BRING FORWARD</span>
-                        </div>
-                      )}
+                    <div className="tool-card-top">
+                      <span className="tool-tag">{tool.tag}</span>
+                      <span className="tool-badge-pill">{tool.badge}</span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
 
-          {/* Deck Footnote Cue */}
-          <div className="tools-deck-footnote">
-            <span>💡 <strong>Interactive Deck:</strong> Click any card to highlight & blur the rest • Click active card to launch live blowing air, mist, and scissors animation</span>
+                    {/* Animated Tool Icon Container */}
+                    <div className="tool-icon-stage">
+                      <div className="tool-icon-circle">
+                        {renderToolSvg(tool.iconType)}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <h4 className="tool-name">{tool.name}</h4>
+                    <div className="tool-sensation-bar">
+                      <span className="sensation-dot" />
+                      <span className="sensation-text">{tool.sensation}</span>
+                    </div>
+
+                    <p className="tool-desc">{tool.desc}</p>
+
+                    <div className="tool-craft-spec">
+                      <CheckCircle2 size={13} className="gold-icon flex-shrink-0" />
+                      <span>{tool.craftDetail}</span>
+                    </div>
+
+                    {/* Interactive Action Area */}
+                    {isFocused ? (
+                      <div className="tool-card-focused-actions">
+                        <button
+                          type="button"
+                          className="tool-launch-modal-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveTool(tool.id);
+                          }}
+                        >
+                          <span>LAUNCH SENSORY LAB</span>
+                          <ArrowRight size={14} />
+                        </button>
+                        <span className="tool-sound-preview-chip">
+                          {tool.soundEffect}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="tool-card-bottom-row">
+                        <div className="tool-sound-cue-inline">
+                          <small>{tool.soundEffect}</small>
+                        </div>
+                        <div className="tool-card-pop-trigger">
+                          <span>{isBlurred ? "FOCUS" : "EXPLORE"}</span>
+                          <ArrowRight size={12} />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Subtle Click-to-Focus Overlay for blurred cards */}
+                    {isBlurred && (
+                      <div className="tool-card-tap-cue">
+                        <span>TAP TO BRING FORWARD</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* MOBILE WEBSITE VIEW: 3D Cards Stacking & Swipe Carousel (@skiper-ui/skiper48) */}
-        <div className="mobile-tools-deck">
-          <Skiper48Cards
-            tools={salonTools}
-            activeIndex={activeToolIndex}
-            onIndexChange={(idx) => {
-              setActiveToolIndex(idx);
-              setFocusedToolId(salonTools[idx]?.id);
-            }}
-            onLaunchModal={(toolId) => setActiveTool(toolId)}
-            renderToolSvg={renderToolSvg}
-          />
+        {/* Deck Footnote Cue */}
+        <div className="tools-deck-footnote">
+          <span>💡 <strong>Interactive Deck:</strong> Click any card to highlight & blur the rest • Click active card to launch live blowing air, mist, and scissors animation</span>
         </div>
       </div>
 

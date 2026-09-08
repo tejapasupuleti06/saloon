@@ -35,8 +35,8 @@ All business information, services, pricing, and media are centralized in:
 📁 [`src/data/salonData.js`](file:///C:/Users/tejap/Downloads/PR-Men-Dot-Salon-Website/src/data/salonData.js)
 
 You can easily update:
-- **Phone Number:** `7947138343` (`+91 79471 38343`)
-- **WhatsApp Booking:** `917947138343`
+- **Phone Number:** `8309583129` (`+91 83095 83129`)
+- **WhatsApp Booking:** `918309583129`
 - **Location & Google Maps URL:** Madhurawada, Visakhapatnam
 - **Opening Hours:** `8:30 AM – 9:30 PM Daily`
 - **Services, Prices & Durations:** Haircuts, Beard Styling, Hair Color, Hair Spa, Men's Facials
@@ -47,8 +47,8 @@ You can easily update:
 
 ## 🌟 Key Features
 
-- **Direct WhatsApp Booking Engine:** Pre-fills client name, phone number, service/combo, date, time, and notes into an instant WhatsApp chat link to `+91 79471 38343`.
-- **One-Click Mobile Calling:** Direct `tel:+917947138343` links on navigation, hero, and contact cards.
+- **Direct WhatsApp Booking Engine:** Pre-fills client name, phone number, service/combo, date, time, and notes into an instant WhatsApp chat link to `+91 83095 83129`.
+- **One-Click Mobile Calling:** Direct `tel:+918309583129` links on navigation, hero, and contact cards.
 - **Service Details Modal:** Full breakdown of services, estimated time, pricing, and feature checkmarks.
 - **Curated Combo Packages:** Popular multi-service bundles with original and discounted pricing.
 - **Interactive Before/After Split Slider:** Touch and drag slider with barber comb handle.

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
-import { ArrowDownRight, ArrowRight, MessageCircle, Phone, Sparkles } from "lucide-react";
+import { ArrowDownRight, ArrowRight, MessageCircle, Phone, Scissors, Crown } from "lucide-react";
 import { siteData, gallery } from "../data/salonData";
 import salonHeroInterior from "../assets/salon_hero_interior.jpg";
 import satishPhoto from "../assets/satish_founder.jpg";
@@ -48,7 +48,7 @@ export default function Hero({ onOpenBooking, onScrollTo, onOpenServices, onOpen
       <div className="hero-content">
         {/* Salon Tagline Pill */}
         <div className="hero-copy animate-fade-in-1">
-          <Sparkles size={14} className="hero-copy-icon" />
+          <Scissors size={13} className="hero-copy-icon" />
           <span>{siteData.tagline}</span>
         </div>
 
@@ -99,10 +99,21 @@ export default function Hero({ onOpenBooking, onScrollTo, onOpenServices, onOpen
       {/* 3D Cylindrical Flip Card (Shop Photo <-> Owner Satish) */}
       <div
         className={`hero-cylinder-stage ${isFlipped ? "is-flipped" : ""}`}
-        onMouseEnter={() => setIsFlipped(true)}
-        onMouseLeave={() => setIsFlipped(false)}
-        onClick={() => setIsFlipped((prev) => !prev)}
-        title="Hover or click to meet founder Satish"
+        onMouseEnter={() => {
+          if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+            setIsFlipped(true);
+          }
+        }}
+        onMouseLeave={() => {
+          if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+            setIsFlipped(false);
+          }
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsFlipped((prev) => !prev);
+        }}
+        title="Tap or hover to meet founder Satish"
       >
         <div className="cylinder-card">
           {/* Front Face: Authentic Shop Interior */}
@@ -136,7 +147,7 @@ export default function Hero({ onOpenBooking, onScrollTo, onOpenServices, onOpen
             <div className="owner-full-content">
               {/* Top Floating Glass Badge */}
               <div className="owner-top-pill">
-                <Sparkles size={11} />
+                <Crown size={12} className="owner-crown-icon" />
                 <span>FOUNDER & OWNER • SATISH</span>
               </div>
 
